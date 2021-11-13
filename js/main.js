@@ -12,13 +12,20 @@ function getMovies(searchText) {
         .then((response) => {
             let movies = response.results;
             let output = '';
+            // <a onclick="movieSelected('${movie.id}')" class="btn btn-primary" href="#">Movie Details</a>
             movies.forEach((movie, index) => {
                 output += `
-                    <div class="col-md-3">
-                        <div class="well text-center">
+                    <div onclick="movieSelected('${movie.id}')" class="col-md-3">
+                        <div class="well movie-card">
                             <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}"/>
-                            <h5>${movie.title}</h5>
-                            <a onclick="movieSelected('${movie.id}')" class="btn btn-primary" href="#">Movie Details</a>
+                            <div class="movie-info">
+                                <h5>${movie.title}</h5>
+                                <span class="${getClassByRate(movie.vote_average)}">${movie.vote_average}</span>
+                            </div>
+                            <div class="overview">
+                                <h6>Overview</h6>
+                                ${movie.overview}
+                            </div>
                         </div>
                     </div>
                 `;
@@ -89,4 +96,14 @@ function convertToInternationalCurrencySystem(labelValue) {
                 ? (Math.abs(Number(labelValue)) / 1.0e+3).toFixed(2) + " K"
                 : Math.abs(Number(labelValue));
 
+}
+
+function getClassByRate(vote) {
+    if (vote >= 8) {
+        return 'lightgreen'
+    } else if (vote >= 5) {
+        return 'orange'
+    } else {
+        return 'red'
+    }
 }
