@@ -1,13 +1,30 @@
-document.addEventListener('DOMContentLoaded', () => {
-    document.querySelector('#searchForm').addEventListener('submit', function (e) {
-        e.preventDefault();
-        let searchText = document.querySelector('#searchText').value;
+const API_KEY = 'api_key=47a84f440bdcd3fa959394724a74ef78';
+const BASE_URL = 'https://api.themoviedb.org/3';
+const IMG_URL = 'https://image.tmdb.org/t/p/w500';
+const CURR_POPS = '/discover/movie?sort_by=popularity.desc&';
+
+document.querySelector('#searchForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    let searchText = document.querySelector('#searchText').value;
+
+    if (searchText) {
         getMovies(searchText);
-    })
+    }
 });
 
+
 function getMovies(searchText) {
-    fetch('https://api.themoviedb.org/3/search/movie?api_key=47a84f440bdcd3fa959394724a74ef78&query=' + searchText)
+    let url = BASE_URL;
+
+    if (searchText) {
+        url += '/search/movie?' + API_KEY + '&query=' + searchText;
+    } else {
+        url += CURR_POPS + API_KEY;
+    }
+
+    // 'https://api.themoviedb.org/3/search/movie?api_key=47a84f440bdcd3fa959394724a74ef78&query=' + searchText
+
+    fetch(url)
         .then(response => response.json())
         .then((response) => {
             let movies = response.results;
@@ -15,9 +32,9 @@ function getMovies(searchText) {
             // <a onclick="movieSelected('${movie.id}')" class="btn btn-primary" href="#">Movie Details</a>
             movies.forEach((movie, index) => {
                 output += `
-                    <div onclick="movieSelected('${movie.id}')" class="col-md-3">
-                        <div class="well movie-card">
-                            <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}"/>
+                    <div class="col-md-3">
+                        <div onclick="movieSelected('${movie.id}')" class="well movie-card">
+                            <img src="${IMG_URL + movie.poster_path}"/>
                             <div class="movie-info">
                                 <h5>${movie.title}</h5>
                                 <span class="${getClassByRate(movie.vote_average)}">${movie.vote_average}</span>
@@ -47,13 +64,17 @@ function movieSelected(id) {
 function getMovie() {
     movieId = sessionStorage.getItem('movieId');
 
-    fetch('https://api.themoviedb.org/3/movie/' + movieId + '?api_key=47a84f440bdcd3fa959394724a74ef78')
+    let url = BASE_URL + '/movie/' + movieId + '?' + API_KEY;
+
+    // 'https://api.themoviedb.org/3/movie/' + movieId + '?api_key=47a84f440bdcd3fa959394724a74ef78'
+
+    fetch(url)
         .then(response => response.json())
         .then((movie) => {
             let output = `
                 <div class="row">
                     <div class="col-md-4">
-                        <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" class="thumbnail"/>
+                        <img src="${IMG_URL + movie.poster_path}" class="thumbnail"/>
                     </div>
                     <div class="col-md-8">
                         <h2>${movie.title}</h2>
@@ -87,23 +108,23 @@ function getMovie() {
 function convertToInternationalCurrencySystem(labelValue) {
     // Nine Zeroes for Billions
     return Math.abs(Number(labelValue)) >= 1.0e+9
-        ? (Math.abs(Number(labelValue)) / 1.0e+9).toFixed(2) + " B"
+        ? (Math.abs(Number(labelValue)) / 1.0e+9).toFixed(2) + ' B'
         // Six Zeroes for Millions 
         : Math.abs(Number(labelValue)) >= 1.0e+6
-            ? (Math.abs(Number(labelValue)) / 1.0e+6).toFixed(2) + " M"
+            ? (Math.abs(Number(labelValue)) / 1.0e+6).toFixed(2) + ' M'
             // Three Zeroes for Thousands
             : Math.abs(Number(labelValue)) >= 1.0e+3
-                ? (Math.abs(Number(labelValue)) / 1.0e+3).toFixed(2) + " K"
+                ? (Math.abs(Number(labelValue)) / 1.0e+3).toFixed(2) + ' K'
                 : Math.abs(Number(labelValue));
 
 }
 
 function getClassByRate(vote) {
     if (vote >= 8) {
-        return 'lightgreen'
+        return 'lightgreen';
     } else if (vote >= 5) {
-        return 'orange'
+        return 'orange';
     } else {
-        return 'red'
+        return 'red';
     }
 }
