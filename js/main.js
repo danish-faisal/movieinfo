@@ -1,7 +1,8 @@
 const API_KEY = 'api_key=47a84f440bdcd3fa959394724a74ef78';
 const BASE_URL = 'https://api.themoviedb.org/3';
 const IMG_URL = 'https://image.tmdb.org/t/p/w500';
-const CURR_POPS = '/discover/movie?sort_by=popularity.desc&';
+const CURR_POPS = BASE_URL + '/discover/movie?sort_by=popularity.desc&' + API_KEY;
+const searchURL = BASE_URL + '/search/movie?' + API_KEY;
 
 // obtained from /genre/movie/list api call - tmdb api
 const genres = [
@@ -82,26 +83,20 @@ const genres = [
         "name": "Western"
     }
 ];
+const selectedGenres = [];
 
 document.querySelector('#searchForm').addEventListener('submit', function (e) {
     e.preventDefault();
     let searchText = document.querySelector('#searchText').value;
 
     if (searchText) {
-        getMovies(searchText);
+        let url = searchURL + '&query=' + searchText;
+        getMovies(url);
     }
 });
 
 
-function getMovies(searchText) {
-    let url = BASE_URL;
-
-    if (searchText) {
-        url += '/search/movie?' + API_KEY + '&query=' + searchText;
-    } else {
-        url += CURR_POPS + API_KEY;
-    }
-
+function getMovies(url) {
     // 'https://api.themoviedb.org/3/search/movie?api_key=47a84f440bdcd3fa959394724a74ef78&query=' + searchText
 
     fetch(url)
@@ -217,6 +212,18 @@ function setGenres() {
         tag.id = genre.id;
         tag.innerText = genre.name;
         tag.classList.add("tag");
+        tag.addEventListener("click", () => {
+            if (selectedGenres.includes(genre.id)) {
+                selectedGenres.forEach((id, idx) => {
+                    if (id == genre.id) {
+                        selectedGenres.splice(idx, 1);
+                    }
+                });
+            } else {
+                selectedGenres.push(genre.id);
+            }
+            getMovies(CURR_POPS + "&with_genres=" + selectedGenres.join(","));
+        });
         tags.append(tag);
     })
 }
