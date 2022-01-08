@@ -9,6 +9,7 @@ const tagsEl = document.getElementById('tags');
 const prev = document.getElementById('prev');
 const curr = document.getElementById('current');
 const next = document.getElementById('next');
+const overlayContent = document.getElementById("overlay-content");
 
 let prevPage = 0;
 let currentPage = 0;
@@ -334,7 +335,25 @@ function checkVideos(movie_id) {
 function openNav(movie_id) {
     fetch(BASE_URL + `/movie/${movie_id}/videos?` + API_KEY)
         .then(res => res.json())
-        .then(videoData => console.log(videoData));
+        .then(videoData => {
+            console.log(videoData);
+            if (videoData && videoData.results.length > 0) {
+                let embed = []
+                videoData.results.forEach((video) => {
+                    let { name, key, site } = video;
+                    if (site == 'YouTube') {
+                        embed.push(`
+                        <iframe width="560" height="315" src="https://www.youtube.com/embed/${key}" title="${name}" 
+                        frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen></iframe>
+                        `);
+                    }
+                });
+                overlayContent.innerHTML = embed.join('');
+            } else {
+                overlayContent.innerHTML = '<h1 class="no-results">No Results Found</h1>';
+            }
+        });
 
     document.getElementById("myNav").style.width = "100%";
 }
