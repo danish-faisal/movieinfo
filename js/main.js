@@ -150,13 +150,15 @@ function getMovies(url) {
                 movies.forEach((movie, index) => {
                     output += `
                     <div class="col-md-3">
-                        <div onclick="movieSelected('${movie.id}')" class="well movie-card">
+                        <div onclick="movieSelected('${movie.id}')" class="well movie-card" title="Click for Details">
                             <img src="${movie.poster_path ? IMG_URL + movie.poster_path : "https://via.placeholder.com/1080x1580"}"/>
                             <div class="movie-info">
                                 <h5>${movie.title}</h5>
                                 <span class="${getClassByRate(movie.vote_average)}">${movie.vote_average}</span>
                             </div>
                             <div class="overview">
+                                <button class="know-more">Know More</button>
+                                <br/>
                                 <h6>Overview</h6>
                                 ${movie.overview}
                             </div>

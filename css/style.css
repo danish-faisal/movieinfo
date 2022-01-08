@@ -157,3 +157,12 @@ body {
     font-size: 20px;
     font-weight: 600;
 }
+
+.know-more {
+    color: white;
+    background-color: orange;
+    border: 0;
+    border-radius: 50px;
+    font-weight: 600;
+    padding: 5px 10px;
+}
