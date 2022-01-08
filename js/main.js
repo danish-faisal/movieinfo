@@ -219,11 +219,6 @@ function setGenres() {
         tag.classList.add("tag");
         tag.addEventListener("click", () => {
             if (selectedGenres[genre.id]) {
-                // selectedGenres.forEach((id, idx) => {
-                //     if (id == genre.id) {
-                //         selectedGenres.splice(idx, 1);
-                //     }
-                // });
                 delete selectedGenres[genre.id];
             } else {
                 selectedGenres[genre.id] = true;
@@ -241,8 +236,28 @@ function highlightSelection() {
         tag.classList.remove("highlight");
     });
 
+    clearBtn();
+
     Object.keys(selectedGenres).forEach(id => {
         const toHighlight = document.getElementById(id);
         toHighlight.classList.add('highlight');
     });
+}
+
+function clearBtn() {
+    let clearBtn = document.getElementById("clear");
+    if (clearBtn) {
+        clearBtn.classList.add("highlight");
+    } else {
+        let clear = document.createElement("div");
+        clear.classList.add("tag", "highlight");
+        clear.id = "clear";
+        clear.innerText = "Clear x";
+        clear.addEventListener("click", () => {
+            for (var id in selectedGenres) delete selectedGenres[id];
+            getMovies(CURR_POPS);
+            setGenres();
+        });
+        document.getElementById("tags").append(clear);
+    }
 }
