@@ -91,6 +91,8 @@ document.querySelector('#searchForm').addEventListener('submit', function (e) {
 
     if (searchText) {
         let url = searchURL + '&query=' + searchText;
+        for (var id in selectedGenres) delete selectedGenres[id];
+        setGenres();
         getMovies(url);
     }
 });
