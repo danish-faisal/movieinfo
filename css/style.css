@@ -102,3 +102,21 @@ body {
         height: 240px;
     }
 }
+
+#tags {
+    width: 80%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    margin: 0px auto 20px auto;
+}
+
+.tag {
+    color: white;
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: orange;
+    border-radius: 50px;
+    margin: 5px;
+}
