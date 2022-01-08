@@ -147,17 +147,17 @@ function getMovies(url) {
                 moviesContainer.classList.add('no-results');
             } else {
                 moviesContainer.classList.remove('no-results');
-                movies.forEach((movie, index) => {
+                movies.forEach((movie) => {
                     output += `
                     <div class="col-md-3">
-                        <div onclick="movieSelected('${movie.id}')" class="well movie-card" title="Click for Details">
+                        <div onclick="checkVideos('${movie.id}')" class="well movie-card" title="Check Videos">
                             <img src="${movie.poster_path ? IMG_URL + movie.poster_path : "https://via.placeholder.com/1080x1580"}"/>
                             <div class="movie-info">
                                 <h5>${movie.title}</h5>
                                 <span class="${getClassByRate(movie.vote_average)}">${movie.vote_average}</span>
                             </div>
                             <div class="overview">
-                                <button class="know-more">Know More</button>
+                                <button onclick="movieSelected('${movie.id}')" class="know-more" title="Know More">Know More</button>
                                 <br/>
                                 <h6>Overview</h6>
                                 ${movie.overview}
@@ -323,4 +323,8 @@ function pageCall(pageNo) {
         url += lastUrl.replace(currPage, 'page=' + pageNo);
     }
     getMovies(url);
+}
+
+function checkVideos(id) {
+    console.log(id);
 }
