@@ -119,4 +119,5 @@ body {
     background-color: orange;
     border-radius: 50px;
     margin: 5px;
+    cursor: pointer;
 }

@@ -129,6 +129,7 @@ function getMovies(searchText) {
             });
 
             document.querySelector('#movies').innerHTML = output;
+            setGenres();
         })
         .catch((err) => {
             console.log(err);
@@ -196,7 +197,6 @@ function convertToInternationalCurrencySystem(labelValue) {
             : Math.abs(Number(labelValue)) >= 1.0e+3
                 ? (Math.abs(Number(labelValue)) / 1.0e+3).toFixed(2) + ' K'
                 : Math.abs(Number(labelValue));
-
 }
 
 function getClassByRate(vote) {
@@ -207,4 +207,16 @@ function getClassByRate(vote) {
     } else {
         return 'red';
     }
+}
+
+function setGenres() {
+    const tags = document.getElementById("tags");
+    tags.innerHTML = "";
+    genres.forEach(genre => {
+        const tag = document.createElement("div");
+        tag.id = genre.id;
+        tag.innerText = genre.name;
+        tag.classList.add("tag");
+        tags.append(tag);
+    })
 }
