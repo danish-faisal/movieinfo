@@ -4,17 +4,18 @@ const IMG_URL = 'https://image.tmdb.org/t/p/w500';
 const CURR_POPS = BASE_URL + '/discover/movie?sort_by=popularity.desc&' + API_KEY;
 const searchURL = BASE_URL + '/search/movie?' + API_KEY;
 
-const tagsEl = document.getElementById("tags");
-const prev = document.getElementById("prev");
-const curr = document.getElementById("current");
-const next = document.getElementById("next");
+const searchForm = document.querySelector('#searchForm');
+const tagsEl = document.getElementById('tags');
+const prev = document.getElementById('prev');
+const curr = document.getElementById('current');
+const next = document.getElementById('next');
 
 let prevPage = 0;
 let currentPage = 0;
 let nextPage = 0;
 let totalPages = 0;
 let lastPage = 500; // limit by TMDB API
-let lastUrl = "";
+let lastUrl = '';
 
 // obtained from /genre/movie/list api call - tmdb api
 const genres = [
@@ -97,7 +98,7 @@ const genres = [
 ];
 const selectedGenres = {};
 
-document.querySelector('#searchForm').addEventListener('submit', function (e) {
+searchForm.addEventListener('submit', function (e) {
     e.preventDefault();
     let searchText = document.querySelector('#searchText').value;
 
@@ -126,24 +127,26 @@ function getMovies(url) {
             curr.innerText = currentPage;
 
             if (currentPage <= 1) {
-                prev.classList.add("disabled");
-                next.classList.remove("disabled");
+                prev.classList.add('disabled');
+                next.classList.remove('disabled');
             } else if (currentPage >= lastPage) {
-                prev.classList.remove("disabled");
-                next.classList.add("disabled");
+                prev.classList.remove('disabled');
+                next.classList.add('disabled');
             } else {
-                prev.classList.remove("disabled");
-                next.classList.remove("disabled");
+                prev.classList.remove('disabled');
+                next.classList.remove('disabled');
             }
+
+            searchForm.scrollIntoView({ behavior: 'smooth' });
 
             let movies = response.results;
             let output = '';
             // <a onclick="movieSelected('${movie.id}')" class="btn btn-primary" href="#">Movie Details</a>
             if (movies.length == 0) {
                 output += '<h1 class="no-results">No Results Found</h1>';
-                moviesContainer.classList.add("no-results");
+                moviesContainer.classList.add('no-results');
             } else {
-                moviesContainer.classList.remove("no-results");
+                moviesContainer.classList.remove('no-results');
                 movies.forEach((movie, index) => {
                     output += `
                     <div class="col-md-3">
@@ -243,19 +246,19 @@ function getClassByRate(vote) {
 }
 
 function setGenres() {
-    tagsEl.innerHTML = "";
+    tagsEl.innerHTML = '';
     genres.forEach(genre => {
-        const tag = document.createElement("div");
+        const tag = document.createElement('div');
         tag.id = genre.id;
         tag.innerText = genre.name;
-        tag.classList.add("tag");
-        tag.addEventListener("click", () => {
+        tag.classList.add('tag');
+        tag.addEventListener('click', () => {
             if (selectedGenres[genre.id]) {
                 delete selectedGenres[genre.id];
             } else {
                 selectedGenres[genre.id] = true;
             }
-            getMovies(CURR_POPS + "&with_genres=" + Object.keys(selectedGenres).join(","));
+            getMovies(CURR_POPS + '&with_genres=' + Object.keys(selectedGenres).join(','));
             highlightSelection();
         });
         tagsEl.append(tag);
@@ -265,7 +268,7 @@ function setGenres() {
 function highlightSelection() {
     const tags = document.querySelectorAll('.tag');
     tags.forEach(tag => {
-        tag.classList.remove("highlight");
+        tag.classList.remove('highlight');
     });
 
     clearBtn();
@@ -277,42 +280,45 @@ function highlightSelection() {
 }
 
 function clearBtn() {
-    let clearBtn = document.getElementById("clear");
+    let clearBtn = document.getElementById('clear');
     if (clearBtn) {
-        clearBtn.classList.add("highlight");
+        clearBtn.classList.add('highlight');
+        if (Object.keys(selectedGenres).length == 0) {
+            clearBtn.remove();
+        }
     } else {
-        let clear = document.createElement("div");
-        clear.classList.add("tag", "highlight");
-        clear.id = "clear";
-        clear.innerText = "Clear x";
-        clear.addEventListener("click", () => {
+        let clear = document.createElement('div');
+        clear.classList.add('tag', 'highlight');
+        clear.id = 'clear';
+        clear.innerText = 'Clear x';
+        clear.addEventListener('click', () => {
             for (var id in selectedGenres) delete selectedGenres[id];
-            getMovies(CURR_POPS);
             setGenres();
+            getMovies(CURR_POPS);
         });
-        document.getElementById("tags").append(clear);
+        tagsEl.append(clear);
     }
 }
 
-prev.addEventListener("click", () => {
+prev.addEventListener('click', () => {
     if (prevPage > 0) {
         pageCall(prevPage);
     }
 });
 
-next.addEventListener("click", () => {
+next.addEventListener('click', () => {
     if (nextPage <= totalPages) {
         pageCall(nextPage);
     }
 });
 
 function pageCall(pageNo) {
-    let url = "";
-    if (!lastUrl.includes("page=")) {
-        url += lastUrl + "&page=" + pageNo;
+    let url = '';
+    if (!lastUrl.includes('page=')) {
+        url += lastUrl + '&page=' + pageNo;
     } else {
         let currPage = `page=${currentPage}`;
-        url += lastUrl.replace(currPage, "page=" + pageNo);
+        url += lastUrl.replace(currPage, 'page=' + pageNo);
     }
     getMovies(url);
 }
