@@ -325,13 +325,17 @@ function pageCall(pageNo) {
     getMovies(url);
 }
 
-function checkVideos(id) {
-    console.log(id);
-    openNav();
+function checkVideos(movie_id) {
+    console.log(movie_id);
+    openNav(movie_id);
 }
 
 /* Open when someone clicks on the span element */
-function openNav() {
+function openNav(movie_id) {
+    fetch(BASE_URL + `/movie/${movie_id}/videos?` + API_KEY)
+        .then(res => res.json())
+        .then(videoData => console.log(videoData));
+
     document.getElementById("myNav").style.width = "100%";
 }
 
