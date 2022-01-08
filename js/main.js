@@ -4,6 +4,17 @@ const IMG_URL = 'https://image.tmdb.org/t/p/w500';
 const CURR_POPS = BASE_URL + '/discover/movie?sort_by=popularity.desc&' + API_KEY;
 const searchURL = BASE_URL + '/search/movie?' + API_KEY;
 
+const tagsEl = document.getElementById("tags");
+const prev = document.getElementById("prev");
+const curr = document.getElementById("current");
+const next = document.getElementById("next");
+
+let prevPage = 0;
+let currentPage = 0;
+let nextPage = 0;
+let totalPages = 0;
+let lastUrl = "";
+
 // obtained from /genre/movie/list api call - tmdb api
 const genres = [
     {
@@ -99,12 +110,18 @@ document.querySelector('#searchForm').addEventListener('submit', function (e) {
 
 
 function getMovies(url) {
+    lastUrl = url;
     // 'https://api.themoviedb.org/3/search/movie?api_key=47a84f440bdcd3fa959394724a74ef78&query=' + searchText
 
     fetch(url)
         .then(response => response.json())
         .then((response) => {
             const moviesContainer = document.querySelector('#movies');
+            totalPages = response.total_pages;
+            currentPage = response.page;
+            nextPage = currentPage + 1;
+            prevPage = currentPage - 1;
+
             let movies = response.results;
             let output = '';
             // <a onclick="movieSelected('${movie.id}')" class="btn btn-primary" href="#">Movie Details</a>
@@ -212,8 +229,7 @@ function getClassByRate(vote) {
 }
 
 function setGenres() {
-    const tags = document.getElementById("tags");
-    tags.innerHTML = "";
+    tagsEl.innerHTML = "";
     genres.forEach(genre => {
         const tag = document.createElement("div");
         tag.id = genre.id;
@@ -228,12 +244,12 @@ function setGenres() {
             getMovies(CURR_POPS + "&with_genres=" + Object.keys(selectedGenres).join(","));
             highlightSelection();
         });
-        tags.append(tag);
+        tagsEl.append(tag);
     })
 }
 
 function highlightSelection() {
-    const tags = document.querySelectorAll(".tag");
+    const tags = document.querySelectorAll('.tag');
     tags.forEach(tag => {
         tag.classList.remove("highlight");
     });
@@ -262,4 +278,27 @@ function clearBtn() {
         });
         document.getElementById("tags").append(clear);
     }
+}
+
+prev.addEventListener("click", () => {
+    if (prevPage > 0) {
+        pageCall(prevPage);
+    }
+});
+
+next.addEventListener("click", () => {
+    if (nextPage <= totalPages) {
+        pageCall(nextPage);
+    }
+});
+
+function pageCall(pageNo) {
+    let url = "";
+    if (!lastUrl.includes("page=")) {
+        url += lastUrl + "&page=" + pageNo;
+    } else {
+        let currPage = `page=${currentPage}`;
+        url += lastUrl.replace(currPage, "page=" + pageNo);
+    }
+    getMovies(url);
 }
