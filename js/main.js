@@ -83,7 +83,7 @@ const genres = [
         "name": "Western"
     }
 ];
-const selectedGenres = [];
+const selectedGenres = {};
 
 document.querySelector('#searchForm').addEventListener('submit', function (e) {
     e.preventDefault();
@@ -124,7 +124,6 @@ function getMovies(url) {
             });
 
             document.querySelector('#movies').innerHTML = output;
-            setGenres();
         })
         .catch((err) => {
             console.log(err);
@@ -213,17 +212,32 @@ function setGenres() {
         tag.innerText = genre.name;
         tag.classList.add("tag");
         tag.addEventListener("click", () => {
-            if (selectedGenres.includes(genre.id)) {
-                selectedGenres.forEach((id, idx) => {
-                    if (id == genre.id) {
-                        selectedGenres.splice(idx, 1);
-                    }
-                });
+            if (selectedGenres[genre.id]) {
+                // selectedGenres.forEach((id, idx) => {
+                //     if (id == genre.id) {
+                //         selectedGenres.splice(idx, 1);
+                //     }
+                // });
+                delete selectedGenres[genre.id];
             } else {
-                selectedGenres.push(genre.id);
+                selectedGenres[genre.id] = true;
             }
-            getMovies(CURR_POPS + "&with_genres=" + selectedGenres.join(","));
+            getMovies(CURR_POPS + "&with_genres=" + Object.keys(selectedGenres).join(","));
+            highlightSelection();
         });
         tags.append(tag);
     })
+}
+
+function highlightSelection() {
+    console.log(selectedGenres);
+    const tags = document.querySelectorAll(".tag");
+    tags.forEach(tag => {
+        tag.classList.remove("highlight");
+    });
+
+    Object.keys(selectedGenres).forEach(id => {
+        const toHighlight = document.getElementById(id);
+        toHighlight.classList.add('highlight');
+    });
 }
