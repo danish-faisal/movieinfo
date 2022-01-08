@@ -102,11 +102,17 @@ function getMovies(url) {
     fetch(url)
         .then(response => response.json())
         .then((response) => {
+            const moviesContainer = document.querySelector('#movies');
             let movies = response.results;
             let output = '';
             // <a onclick="movieSelected('${movie.id}')" class="btn btn-primary" href="#">Movie Details</a>
-            movies.forEach((movie, index) => {
-                output += `
+            if (movies.length == 0) {
+                output += '<h1 class="no-results">No Results Found</h1>';
+                moviesContainer.classList.add("no-results");
+            } else {
+                moviesContainer.classList.remove("no-results");
+                movies.forEach((movie, index) => {
+                    output += `
                     <div class="col-md-3">
                         <div onclick="movieSelected('${movie.id}')" class="well movie-card">
                             <img src="${movie.poster_path ? IMG_URL + movie.poster_path : "https://via.placeholder.com/1080x1580"}"/>
@@ -121,9 +127,9 @@ function getMovies(url) {
                         </div>
                     </div>
                 `;
-            });
-
-            document.querySelector('#movies').innerHTML = output;
+                });
+            }
+            moviesContainer.innerHTML = output;
         })
         .catch((err) => {
             console.log(err);
@@ -230,7 +236,6 @@ function setGenres() {
 }
 
 function highlightSelection() {
-    console.log(selectedGenres);
     const tags = document.querySelectorAll(".tag");
     tags.forEach(tag => {
         tag.classList.remove("highlight");

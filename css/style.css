@@ -125,3 +125,9 @@ body {
 .highlight {
     background-color: red;
 }
+
+.no-results {
+    display: flex;
+    justify-content: center;
+    color: white;
+}
