@@ -13,6 +13,7 @@ let prevPage = 0;
 let currentPage = 0;
 let nextPage = 0;
 let totalPages = 0;
+let lastPage = 500; // limit by TMDB API
 let lastUrl = "";
 
 // obtained from /genre/movie/list api call - tmdb api
@@ -121,6 +122,19 @@ function getMovies(url) {
             currentPage = response.page;
             nextPage = currentPage + 1;
             prevPage = currentPage - 1;
+
+            curr.innerText = currentPage;
+
+            if (currentPage <= 1) {
+                prev.classList.add("disabled");
+                next.classList.remove("disabled");
+            } else if (currentPage >= lastPage) {
+                prev.classList.remove("disabled");
+                next.classList.add("disabled");
+            } else {
+                prev.classList.remove("disabled");
+                next.classList.remove("disabled");
+            }
 
             let movies = response.results;
             let output = '';
