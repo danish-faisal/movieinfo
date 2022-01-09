@@ -155,7 +155,7 @@ function getMovies(url) {
                 movies.forEach((movie) => {
                     output += `
                     <div class="col-md-3">
-                        <div onclick="checkVideos('${movie.id}')" class="well movie-card" title="Check Videos">
+                        <div onclick="checkVideos('${movie.id}', '${movie.title}')" class="well movie-card" title="Check Videos">
                             <img src="${movie.poster_path ? IMG_URL + movie.poster_path : "https://via.placeholder.com/1080x1580"}"/>
                             <div class="movie-info">
                                 <h5>${movie.title}</h5>
@@ -330,20 +330,21 @@ function pageCall(pageNo) {
     getMovies(url);
 }
 
-function checkVideos(movie_id) {
-    console.log(movie_id);
-    openNav(movie_id);
+function checkVideos(movie_id, movie_name) {
+    console.log(movie_id, movie_name);
+    openNav(movie_id, movie_name);
 }
 
 /* Open when someone clicks on the span element */
-function openNav(movie_id) {
+function openNav(movie_id, movie_name) {
     fetch(BASE_URL + `/movie/${movie_id}/videos?` + API_KEY)
         .then(res => res.json())
         .then(videoData => {
             console.log(videoData);
             if (videoData && videoData.results.length > 0) {
-                let embed = []
-                videoData.results.forEach((video) => {
+                let embed = [];
+                let dots = [];
+                videoData.results.forEach((video, idx) => {
                     let { name, key, site } = video;
                     if (site == 'YouTube') {
                         embed.push(`
@@ -351,9 +352,23 @@ function openNav(movie_id) {
                         frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                         allowfullscreen></iframe>
                         `);
+
+                        dots.push(`<span class="dot">${idx + 1}</span>`)
                     }
                 });
-                overlayContent.innerHTML = embed.join('');
+                let content = '';
+                if (embed.length > 0) {
+                    content += `
+                    <h1 class="no-results">${movie_name}</h1>
+                    <br/>
+                    ${embed.join('')}
+                    <br/>
+                    <div class="dots">${dots.join('')}</div>
+                `;
+                } else {
+                    content += '<h1 class="no-results">No Results Found</h1>';
+                }
+                overlayContent.innerHTML = content;
                 activeSlide = 0;
                 showVideos();
             } else {
@@ -371,14 +386,17 @@ function closeNav() {
 
 function showVideos() {
     let embedClasses = document.querySelectorAll('.embed');
+    let dots = document.querySelectorAll('.dot');
     totalVideos = embedClasses.length;
     embedClasses.forEach((embedTag, idx) => {
         if (idx == activeSlide) {
             embedTag.classList.add('showVid');
             embedTag.classList.remove('hideVid');
+            dots[idx].classList.add('highlightDot');
         } else {
             embedTag.classList.remove('showVid');
             embedTag.classList.add('hideVid');
+            dots[idx].classList.remove('highlightDot');
         }
     });
 }
