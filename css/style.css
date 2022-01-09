@@ -231,3 +231,15 @@ body {
 .embed.showVid {
     display: inline-block;
 }
+
+.arrow {
+    position: absolute;
+}
+
+.arrow.left-arrow {
+    left: 5%
+}
+
+.arrow.right-arrow {
+    right: 5%;
+}

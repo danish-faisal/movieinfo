@@ -9,7 +9,9 @@ const tagsEl = document.getElementById('tags');
 const prev = document.getElementById('prev');
 const curr = document.getElementById('current');
 const next = document.getElementById('next');
-const overlayContent = document.getElementById("overlay-content");
+const overlayContent = document.getElementById('overlay-content');
+const leftArrow = document.getElementById('left-arrow');
+const rightArrow = document.getElementById('right-arrow');
 
 let prevPage = 0;
 let currentPage = 0;
@@ -18,6 +20,7 @@ let totalPages = 0;
 let lastPage = 500; // limit by TMDB API
 let lastUrl = '';
 let activeSlide = 0;
+let totalVideos = 0;
 
 // obtained from /genre/movie/list api call - tmdb api
 const genres = [
@@ -368,7 +371,7 @@ function closeNav() {
 
 function showVideos() {
     let embedClasses = document.querySelectorAll('.embed');
-
+    totalVideos = embedClasses.length;
     embedClasses.forEach((embedTag, idx) => {
         if (idx == activeSlide) {
             embedTag.classList.add('showVid');
@@ -379,3 +382,21 @@ function showVideos() {
         }
     });
 }
+
+leftArrow.addEventListener('click', () => {
+    if (activeSlide > 0) {
+        activeSlide--;
+    } else {
+        activeSlide = totalVideos - 1;
+    }
+    showVideos();
+});
+
+rightArrow.addEventListener('click', () => {
+    if (activeSlide < totalVideos - 1) {
+        activeSlide++;
+    } else {
+        activeSlide = 0;
+    }
+    showVideos();
+});
