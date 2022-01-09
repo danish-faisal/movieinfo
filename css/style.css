@@ -250,6 +250,10 @@ body {
 
 .dots {
     margin-top: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
 }
 
 .dots .dot {
