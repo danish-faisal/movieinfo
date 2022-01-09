@@ -17,6 +17,7 @@ let nextPage = 0;
 let totalPages = 0;
 let lastPage = 500; // limit by TMDB API
 let lastUrl = '';
+let activeSlide = 0;
 
 // obtained from /genre/movie/list api call - tmdb api
 const genres = [
@@ -343,22 +344,38 @@ function openNav(movie_id) {
                     let { name, key, site } = video;
                     if (site == 'YouTube') {
                         embed.push(`
-                        <iframe width="560" height="315" src="https://www.youtube.com/embed/${key}" title="${name}" 
+                        <iframe width="560" height="315" src="https://www.youtube.com/embed/${key}" title="${name}" class="embed hideVid"
                         frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                         allowfullscreen></iframe>
                         `);
                     }
                 });
                 overlayContent.innerHTML = embed.join('');
+                activeSlide = 0;
+                showVideos();
             } else {
                 overlayContent.innerHTML = '<h1 class="no-results">No Results Found</h1>';
             }
         });
 
-    document.getElementById("myNav").style.width = "100%";
+    document.getElementById('myNav').style.width = '100%';
 }
 
 /* Close when someone clicks on the "x" symbol inside the overlay */
 function closeNav() {
-    document.getElementById("myNav").style.width = "0%";
+    document.getElementById('myNav').style.width = '0%';
+}
+
+function showVideos() {
+    let embedClasses = document.querySelectorAll('.embed');
+
+    embedClasses.forEach((embedTag, idx) => {
+        if (idx == activeSlide) {
+            embedTag.classList.add('showVid');
+            embedTag.classList.remove('hideVid');
+        } else {
+            embedTag.classList.remove('showVid');
+            embedTag.classList.add('hideVid');
+        }
+    });
 }
