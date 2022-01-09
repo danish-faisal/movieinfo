@@ -112,6 +112,9 @@ searchForm.addEventListener('submit', function (e) {
         for (var id in selectedGenres) delete selectedGenres[id];
         setGenres();
         getMovies(url);
+    } else {
+        setGenres();
+        getMovies(CURR_POPS);
     }
 });
 
@@ -273,6 +276,7 @@ function setGenres() {
 }
 
 function highlightSelection() {
+    document.querySelector('#searchText').value = '';
     const tags = document.querySelectorAll('.tag');
     tags.forEach(tag => {
         tag.classList.remove('highlight');
@@ -381,6 +385,13 @@ function openNav(movie_id, movie_name) {
 
 /* Close when someone clicks on the "x" symbol inside the overlay */
 function closeNav() {
+    // stop playing video on modal close
+    const iframes = document.getElementsByTagName('iframe');
+    if (iframes !== null) {
+        for (let i = 0; i < iframes.length; i++) {
+            iframes[i].src = iframes[i].src; //causes a reload so it stops playing, music, video, etc.
+        }
+    }
     document.getElementById('myNav').style.width = '0%';
 }
 
