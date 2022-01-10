@@ -68,6 +68,9 @@ body {
     color: red;
 }
 
+#movies > div > .well {
+    padding: 0;
+}
 
 #movies img, #movie img {
     width: 100%;
@@ -231,6 +234,28 @@ body {
     }
 }
 
+@media (max-width: 768px) {
+    .no-results {
+        font-size: 28px;
+    }
+}
+
+@media (max-width: 767px) and (min-width: 425px) {
+    #overlay-content > iframe.embed.showVid {
+        width: 300px;
+        height: 150px;
+        
+    }
+}
+
+@media (max-width: 424px) {
+    #overlay-content > iframe.embed.showVid {
+        width: 220px;
+        height: 120px
+    }
+}
+
+
 .embed.hideVid {
     display: none;
 }
@@ -275,4 +300,4 @@ body {
 
 .dot.highlightDot {
     border-color: orange;
-} 
+}
